@@ -42,4 +42,9 @@ class TinyintType extends Type
     {
         return ParameterType::INTEGER;
     }
+
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
 }
