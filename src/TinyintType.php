@@ -5,6 +5,7 @@ namespace Kalibora\DoctrineType;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 
 class TinyintType extends Type
@@ -19,18 +20,37 @@ class TinyintType extends Type
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         if (!$platform instanceof MySqlPlatform) {
-            throw new \Exception('This type only support mysql');
+            throw new \LogicException('This type only support mysql');
         }
 
-        $unsigned = (bool) $fieldDeclaration['unsigned'] ? ' UNSIGNED' : '';
+        $unsigned = $fieldDeclaration['unsigned'] ? ' UNSIGNED' : '';
 
-        if ((bool) $fieldDeclaration['length']) {
+        if ($fieldDeclaration['length']) {
             $sql = sprintf('TINYINT(%d)', $fieldDeclaration['length']);
         } else {
             $sql = 'TINYINT';
         }
 
         return $sql . $unsigned;
+    }
+
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
+            return $value;
+        }
+
+        throw new ConversionException(
+            sprintf('Expected integer, got %s', is_object($value) ? get_class($value) : gettype($value))
+        );
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
