@@ -1,3 +1,8 @@
 parameters:
     excludes_analyse:
     ignoreErrors:
+        -
+            message: '#.*return type has no value type specified in iterable type array.*#'
+            path: tests/*
+includes:
+    -  vendor/jangregor/phpstan-prophecy/extension.neon
