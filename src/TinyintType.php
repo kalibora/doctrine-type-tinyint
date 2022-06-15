@@ -4,7 +4,7 @@ namespace Kalibora\DoctrineType;
 
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 
@@ -19,13 +19,13 @@ class TinyintType extends Type
 
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        if (!$platform instanceof MySqlPlatform) {
+        if (!$platform instanceof MySQLPlatform) {
             throw new \LogicException('This type only support mysql');
         }
 
         $unsigned = $fieldDeclaration['unsigned'] ? ' UNSIGNED' : '';
 
-        if ($fieldDeclaration['length']) {
+        if ($fieldDeclaration['length'] && is_numeric($fieldDeclaration['length'])) {
             $sql = sprintf('TINYINT(%d)', $fieldDeclaration['length']);
         } else {
             $sql = 'TINYINT';
@@ -40,22 +40,16 @@ class TinyintType extends Type
             return null;
         }
 
-        if (is_int($value)) {
-            return $value;
-        }
-
-        if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
-            return $value;
-        }
-
-        throw new ConversionException(
-            sprintf('Expected integer, got %s', is_object($value) ? get_class($value) : gettype($value))
-        );
+        return $this->ensureInteger($value);
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return null === $value ? null : (int) $value;
+        if (null === $value) {
+            return null;
+        }
+
+        return (int) $this->ensureInteger($value);
     }
 
     public function getBindingType()
@@ -66,5 +60,23 @@ class TinyintType extends Type
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
         return true;
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return int|string
+     */
+    private function ensureInteger($value)
+    {
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
+            return $value;
+        }
+
+        throw new ConversionException(sprintf('Expected integer, got %s', is_object($value) ? get_class($value) : gettype($value)));
     }
 }
