@@ -64,24 +64,6 @@ class TinyintTypeTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider providerForConvertToPHPValueFailure
-     *
-     * @param mixed $value
-     */
-    public function testConvertToPHPValueFailure($value, string $message) : void
-    {
-        $type = new TinyintType();
-
-        $this->expectException(ConversionException::class);
-        $this->expectExceptionMessage($message);
-
-        $type->convertToPHPValue(
-            $value,
-            $this->prophesize(AbstractPlatform::class)->reveal()
-        );
-    }
-
     public function providerForConvertToDatabaseValueSuccess() : array
     {
         return [
@@ -172,32 +154,6 @@ class TinyintTypeTest extends TestCase
             'int: negative number' => [
                 'value' => -100,
                 'dbValue' => -100,
-            ],
-        ];
-    }
-
-    public function providerForConvertToPHPValueFailure() : array
-    {
-        return [
-            'string: decimal point' => [
-                'value' => '1.2',
-                'message' => 'Expected integer, got string',
-            ],
-            'double' => [
-                'value' => 1.2,
-                'message' => 'Expected integer, got double',
-            ],
-            'bool' => [
-                'value' => true,
-                'message' => 'Expected integer, got boolean',
-            ],
-            'array' => [
-                'value' => ['1'],
-                'message' => 'Expected integer, got array',
-            ],
-            'object' => [
-                'value' => new \stdClass(),
-                'message' => 'Expected integer, got stdClass',
             ],
         ];
     }

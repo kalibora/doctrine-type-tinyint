@@ -40,16 +40,21 @@ class TinyintType extends Type
             return null;
         }
 
-        return $this->ensureInteger($value);
+        if (is_int($value)) {
+            return $value;
+        }
+
+        if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
+            return $value;
+        }
+
+        throw new ConversionException(sprintf('Expected integer, got %s', is_object($value) ? get_class($value) : gettype($value)));
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if (null === $value) {
-            return null;
-        }
-
-        return (int) $this->ensureInteger($value);
+        /* @phpstan-ignore-next-line It is guaranteed by the database to be null or a string-represented integer. */
+        return null === $value ? null : (int) $value;
     }
 
     public function getBindingType()
@@ -60,23 +65,5 @@ class TinyintType extends Type
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
         return true;
-    }
-
-    /**
-     * @param mixed $value
-     *
-     * @return int|string
-     */
-    private function ensureInteger($value)
-    {
-        if (is_int($value)) {
-            return $value;
-        }
-
-        if (is_string($value) && preg_match('/^-?\d+$/', $value)) {
-            return $value;
-        }
-
-        throw new ConversionException(sprintf('Expected integer, got %s', is_object($value) ? get_class($value) : gettype($value)));
     }
 }
