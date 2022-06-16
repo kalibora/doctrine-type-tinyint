@@ -46,12 +46,12 @@ class TinyintTypeTest extends TestCase
     }
 
     /**
-     * @dataProvider providerForConvertToPHPValueSuccess
+     * @dataProvider providerForConvertToPHPValue
      *
      * @param mixed $value
      * @param mixed $phpValue
      */
-    public function testconvertToPHPValueSuccess($value, $phpValue) : void
+    public function testconvertToPHPValue($value, $phpValue) : void
     {
         $type = new TinyintType();
 
@@ -124,36 +124,36 @@ class TinyintTypeTest extends TestCase
         ];
     }
 
-    public function providerForConvertToPHPValueSuccess() : array
+    public function providerForConvertToPHPValue() : array
     {
         return [
             'null' => [
                 'value' => null,
-                'dbValue' => null,
+                'phpValue' => null,
             ],
             'string: zero' => [
                 'value' => '0',
-                'dbValue' => 0,
+                'phpValue' => 0,
             ],
             'string: positive number' => [
                 'value' => '1',
-                'dbValue' => 1,
+                'phpValue' => 1,
             ],
             'string: negative number' => [
                 'value' => '-100',
-                'dbValue' => -100,
+                'phpValue' => -100,
             ],
             'int: zero' => [
                 'value' => 0,
-                'dbValue' => 0,
+                'phpValue' => 0,
             ],
             'int: positive number' => [
                 'value' => 1,
-                'dbValue' => 1,
+                'phpValue' => 1,
             ],
             'int: negative number' => [
                 'value' => -100,
-                'dbValue' => -100,
+                'phpValue' => -100,
             ],
         ];
     }
