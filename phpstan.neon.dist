@@ -1,4 +1,14 @@
 parameters:
+    level: 8
+    reportUnmatchedIgnoredErrors: false
+
+    paths:
+        - src
+        - tests
+
+    parallel:
+        processTimeout: 300.0
+
     excludes_analyse:
     ignoreErrors:
         -
