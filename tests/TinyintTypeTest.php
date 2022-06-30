@@ -5,9 +5,12 @@ namespace Kalibora\DoctrineType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class TinyintTypeTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @dataProvider providerForConvertToDatabaseValueSuccess
      *

@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Type;
 
 class TinyintType extends Type
 {
-    const TINYINT = 'tinyint';
+    public const TINYINT = 'tinyint';
 
     public function getName()
     {
