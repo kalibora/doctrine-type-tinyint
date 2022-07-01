@@ -12,11 +12,19 @@ class TinyintType extends Type
 {
     public const TINYINT = 'tinyint';
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return self::TINYINT;
     }
 
+    /**
+     * @param array<string,mixed> $fieldDeclaration
+     *
+     * @return string
+     */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
         if (!$platform instanceof MySQLPlatform) {
@@ -34,6 +42,13 @@ class TinyintType extends Type
         return $sql . $unsigned;
     }
 
+    /**
+     * @param string|int|mixed|null $value
+     *
+     * @return string|int|null
+     *
+     * @throws ConversionException
+     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (null === $value) {
@@ -51,17 +66,28 @@ class TinyintType extends Type
         throw new ConversionException(sprintf('Expected integer, got %s', is_object($value) ? get_class($value) : gettype($value)));
     }
 
+    /**
+     * @param string|int|mixed|null $value
+     *
+     * @return int|null
+     */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         /* @phpstan-ignore-next-line It is guaranteed by the database to be null or a string-represented integer. */
         return null === $value ? null : (int) $value;
     }
 
+    /**
+     * @return int
+     */
     public function getBindingType()
     {
         return ParameterType::INTEGER;
     }
 
+    /**
+     * @return bool
+     */
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
         return true;
